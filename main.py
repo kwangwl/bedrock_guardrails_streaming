@@ -1,11 +1,18 @@
 import streamlit as st
 from llm.bedrock import get_streaming_response
-from buffer_manager.buffer_first_manager import BufferFirstManager
+from buffer_manager.streaming_buffer_manager import StreamingBufferManager
+from buffer_manager.delayed_buffer_manager import DelayedBufferManager
+
 
 # 설정값
 MODEL_ID = {
     "Haiku": "anthropic.claude-3-haiku-20240307-v1:0",
     "Sonnet 3.5 v1": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+}
+
+BUFFER_MANAGERS = {
+    "실시간 스트리밍 (가드레일 동시 처리)": StreamingBufferManager,
+    "지연 처리 (가드레일 후 순차 표시)": DelayedBufferManager
 }
 
 # 가드레일 설정
@@ -29,6 +36,16 @@ def main():
         key="model_select"
     )
 
+    # 버퍼 매니저 선택
+    selected_manager = st.sidebar.selectbox(
+        "처리 방식 선택",
+        options=list(BUFFER_MANAGERS.keys()),
+        help="실시간 스트리밍: 텍스트를 즉시 표시하면서 가드레일 처리\n"
+             "지연 처리: 버퍼에 모았다가 가드레일 처리 후 순차적으로 표시",
+        key="manager_select"
+    )
+
+    # 버퍼 크기 설정
     text_unit = st.sidebar.slider(
         "버퍼 크기",
         min_value=0,
@@ -50,8 +67,13 @@ def main():
                 region=GUARDRAIL_CONFIG["region"]
             )
 
-            # 버퍼 매니저로 응답 처리
-            buffer_manager = BufferFirstManager(st.container(), text_unit, GUARDRAIL_CONFIG)
+            # 선택된 버퍼 매니저로 응답 처리
+            buffer_manager_class = BUFFER_MANAGERS[selected_manager]
+            buffer_manager = buffer_manager_class(
+                placeholder=st.container(),
+                text_unit=text_unit,
+                guardrail_config=GUARDRAIL_CONFIG
+            )
             buffer_manager.process_stream(response)
 
         except Exception as e:

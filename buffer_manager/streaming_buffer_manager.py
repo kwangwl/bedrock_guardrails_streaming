@@ -3,7 +3,7 @@ import pandas as pd
 from guardrails.bedrock import apply_guardrail
 
 
-class BufferFirstManager:
+class StreamingBufferManager:
     def __init__(self, placeholder, text_unit, guardrail_config):
         """
         placeholder: streamlit 컨테이너
