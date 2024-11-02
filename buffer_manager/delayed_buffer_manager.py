@@ -9,11 +9,16 @@ class DelayedBufferManager:
         self.text_unit = text_unit
         self.guardrail_config = guardrail_config
 
+        # 텍스트 관련 상태
         self.buffer_text = ""
         self.full_text = ""
         self.processed_text = ""
+
+        # 스트리밍 위치
         self.current_start_position = 0
         self.current_end_position = 0
+
+        # UI 상태
         self.content_placeholder = None
 
     def process_stream(self, response):
@@ -26,14 +31,13 @@ class DelayedBufferManager:
                 if 'messageStart' in event:
                     self.placeholder.markdown("**답변 Start**")
 
-                if 'contentBlockDelta' in event:
-                    new_text = event['contentBlockDelta']['delta']['text']
-                    self._handle_content(new_text)
+                elif 'contentBlockDelta' in event:
+                    self._handle_content(event['contentBlockDelta']['delta']['text'])
 
-                if 'messageStop' in event:
-                    self._process_remaining_buffer()
+                elif 'messageStop' in event:
+                    self._finalize_streaming()
 
-                if 'metadata' in event:
+                elif 'metadata' in event:
                     self.placeholder.json(event['metadata'])
 
             return self.full_text
@@ -44,71 +48,77 @@ class DelayedBufferManager:
 
     def _handle_content(self, new_text):
         """새로운 텍스트 처리"""
-        if self.content_placeholder is None:
-            self.content_placeholder = self.placeholder.empty()
-
+        self._ensure_placeholder()
         self.buffer_text += new_text
-        self._stream_processed_content()
+        self._stream_current_content()
 
-        # 버퍼가 기준 크기를 넘을 때만 처리
         if len(self.buffer_text) > self.text_unit:
             self._process_buffer()
 
-    def _process_remaining_buffer(self):
-        """남은 버퍼 처리"""
-        # self._complete_current_streaming()
-
-        # 남은 버퍼가 있을 경우에만 처리
+    def _finalize_streaming(self):
+        """스트리밍 종료 처리"""
         if self.buffer_text:
             self._process_buffer()
+        self._ensure_placeholder()
+        self._stream_remaining_content()
+
+    def _ensure_placeholder(self):
+        """플레이스홀더 확보"""
         if self.content_placeholder is None:
             self.content_placeholder = self.placeholder.empty()
 
-        self._complete_current_streaming()
+    def _stream_current_content(self, chunk_size=5):
+        """현재 처리된 텍스트 스트리밍"""
+        if not self.processed_text or self.current_end_position >= len(self.processed_text):
+            return
 
-    def _stream_processed_content(self, chunk_size=5):
-        """처리된 텍스트 스트리밍"""
-        if self.processed_text and self.current_end_position < len(self.processed_text):
-            end_pos = min(self.current_end_position + chunk_size, len(self.processed_text))
-            chunk = self.processed_text[self.current_start_position:end_pos]
-            self.content_placeholder.write(chunk)
-            self.current_end_position = end_pos
+        end_pos = min(self.current_end_position + chunk_size, len(self.processed_text))
+        chunk = self.processed_text[self.current_start_position:end_pos]
+        self.content_placeholder.write(chunk)
+        self.current_end_position = end_pos
 
-    def _complete_current_streaming(self):
-        """현재 처리된 텍스트 스트리밍 완료"""
+    def _stream_remaining_content(self):
+        """남은 텍스트 모두 스트리밍"""
         while self.current_end_position < len(self.processed_text):
-            self._stream_processed_content()
+            self._stream_current_content()
 
     def _process_buffer(self):
         """버퍼 처리 및 가드레일 적용"""
-        if not self.buffer_text:  # 빈 버퍼는 처리하지 않음
+        if not self.buffer_text:
             return
 
-        self._complete_current_streaming()
+        self._stream_remaining_content()
+        status, violations, filtered_text, response = self._apply_guardrail()
 
-        status, violations, filtered_text, response = apply_guardrail(
+        self._update_text_state(status, filtered_text)
+        self._show_results(status, violations, response)
+        self._reset_buffer()
+
+    def _apply_guardrail(self):
+        """가드레일 적용"""
+        return apply_guardrail(
             text=self.buffer_text,
             text_type="OUTPUT",
             **self.guardrail_config
         )
 
+    def _update_text_state(self, status, filtered_text):
+        """텍스트 상태 업데이트"""
         self.full_text += filtered_text
-        self._show_results(status, violations, response)
-
         if status != "blocked":
             self.processed_text += filtered_text
             self.current_start_position = self.current_end_position
 
-        self._reset_buffer()
-
     def _show_results(self, status, violations, response):
         """가드레일 결과 표시"""
-        if status == "blocked":
-            self.placeholder.error("가드레일 검사 결과 : 🚫 Blocked")
-        elif status == "anonymized":
-            self.placeholder.warning("가드레일 검사 결과 : ⚠️ Anonymized")
-        else:
-            self.placeholder.success("가드레일 검사 결과 : ✅ Passed")
+        status_messages = {
+            "blocked": ("가드레일 검사 결과 : 🚫 Blocked", "error"),
+            "anonymized": ("가드레일 검사 결과 : ⚠️ Anonymized", "warning"),
+            "passed": ("가드레일 검사 결과 : ✅ Passed", "success")
+        }
+
+        message, method = status_messages.get(status)
+        getattr(self.placeholder, method)(message)
 
         with self.placeholder.expander("가드레일 검사 Trace"):
             st.dataframe(pd.DataFrame(violations), hide_index=True, use_container_width=True)
