@@ -61,6 +61,7 @@ class DelayedBufferManager:
 
         # 버퍼가 기준 크기를 넘으면 가드레일 처리
         if len(self.buffer_text) > self.text_unit:
+            self._continue_remain_streaming()
             should_stop = self._apply_guardrail()
             self._reset_buffer()
             return should_stop
@@ -69,6 +70,8 @@ class DelayedBufferManager:
 
     def _process_remaining_buffer(self):
         """남은 버퍼 처리"""
+        self._continue_remain_streaming()
+
         # 남은 처리된 텍스트 모두 출력
         if self.buffer_text:
             self._apply_guardrail()
@@ -83,12 +86,13 @@ class DelayedBufferManager:
 
             self.current_end_position = end_pos
 
-    def _apply_guardrail(self):
-        """가드레일 적용"""
-        # 남은 처리된 텍스트 모두 출력
+    def _continue_remain_streaming(self):
+        """현재 처리된 텍스트를 계속 스트리밍"""
         while self.current_end_position < len(self.processed_text):
             self._continue_streaming()
 
+    def _apply_guardrail(self):
+        """가드레일 적용"""
         status, violations, filtered_text, response = apply_guardrail(
             text=self.buffer_text,
             text_type="OUTPUT",
@@ -124,4 +128,4 @@ class DelayedBufferManager:
     def _reset_buffer(self):
         """버퍼 초기화"""
         self.buffer_text = ""
-        # self.content_placeholder = None
+        self.content_placeholder = None
