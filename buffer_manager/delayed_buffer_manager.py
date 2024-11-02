@@ -28,7 +28,10 @@ class DelayedBufferManager:
 
                 if 'contentBlockDelta' in event:
                     new_text = event['contentBlockDelta']['delta']['text']
-                    self._handle_content(new_text, is_last='messageStop' in event)
+                    self._handle_content(new_text)
+
+                if 'messageStop' in event:
+                    self._process_remaining_buffer()
 
                 if 'metadata' in event:
                     self.placeholder.json(event['metadata'])
@@ -39,7 +42,7 @@ class DelayedBufferManager:
             st.error(f"스트리밍 처리 중 오류 발생: {str(e)}")
             return ""
 
-    def _handle_content(self, new_text, is_last=False):
+    def _handle_content(self, new_text):
         """새로운 텍스트 처리"""
         if self.content_placeholder is None:
             self.content_placeholder = self.placeholder.empty()
@@ -47,9 +50,21 @@ class DelayedBufferManager:
         self.buffer_text += new_text
         self._stream_processed_content()
 
-        # 버퍼가 기준 크기를 넘거나 마지막 청크일 경우에만 처리
-        if len(self.buffer_text) > self.text_unit or is_last:
+        # 버퍼가 기준 크기를 넘을 때만 처리
+        if len(self.buffer_text) > self.text_unit:
             self._process_buffer()
+
+    def _process_remaining_buffer(self):
+        """남은 버퍼 처리"""
+        # self._complete_current_streaming()
+
+        # 남은 버퍼가 있을 경우에만 처리
+        if self.buffer_text:
+            self._process_buffer()
+        if self.content_placeholder is None:
+            self.content_placeholder = self.placeholder.empty()
+
+        self._complete_current_streaming()
 
     def _stream_processed_content(self, chunk_size=5):
         """처리된 텍스트 스트리밍"""
