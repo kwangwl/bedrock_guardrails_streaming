@@ -1,7 +1,7 @@
 from buffer_manager.pre_guardrail_manager import PreGuardrailManager
 
 
-class DynamicPreGuardrailManager(PreGuardrailManager):
+class DynamicGuardrailManager(PreGuardrailManager):
     """첫 버퍼와 이후 버퍼 크기를 다르게 설정하여 처리하는 관리자"""
 
     def __init__(self, placeholder, initial_buffer_size, subsequent_buffer_size, guardrail_config):

@@ -2,7 +2,7 @@ import streamlit as st
 from llm.bedrock import get_streaming_response
 from buffer_manager.post_guardrail_manager import PostGuardrailManager
 from buffer_manager.pre_guardrail_manager import PreGuardrailManager
-from buffer_manager.dynamic_pre_guardrail_manager import DynamicPreGuardrailManager
+from buffer_manager.dynamic_guardrail_manager import DynamicGuardrailManager
 
 
 # 설정값
@@ -14,7 +14,7 @@ MODEL_ID = {
 BUFFER_MANAGERS = {
     "실시간 스트리밍 (가드레일 후처리)": PostGuardrailManager,
     "지연 처리 (가드레일 선처리)": PreGuardrailManager,
-    "동적 버퍼 처리 (가드레일 선처리)": DynamicPreGuardrailManager
+    "동적 버퍼 처리 (가드레일 선처리)": DynamicGuardrailManager
 }
 
 # 가드레일 설정
