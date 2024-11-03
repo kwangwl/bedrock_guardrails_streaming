@@ -1,7 +1,7 @@
 import streamlit as st
 from llm.bedrock import get_streaming_response
-from buffer_manager.streaming_buffer_manager import StreamingBufferManager
-from buffer_manager.delayed_buffer_manager import DelayedBufferManager
+from buffer_manager.post_guardrail_manager import PostGuardrailStreamManager
+from buffer_manager.pre_guardrail_manager import PreGuardrailStreamManager
 
 
 # 설정값
@@ -11,8 +11,8 @@ MODEL_ID = {
 }
 
 BUFFER_MANAGERS = {
-    "실시간 스트리밍 (가드레일 동시 처리)": StreamingBufferManager,
-    "지연 처리 (가드레일 후 순차 표시)": DelayedBufferManager
+    "실시간 스트리밍 (가드레일 후처리)": PostGuardrailStreamManager,
+    "지연 처리 (가드레일 선처리)": PreGuardrailStreamManager
 }
 
 # 가드레일 설정
