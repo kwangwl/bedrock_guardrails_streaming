@@ -12,7 +12,6 @@ class PreGuardrailManager(BaseManager):
 
     def _handle_content(self, new_text):
         """새로운 텍스트를 버퍼에 추가하고 청크 단위로 처리"""
-        self._ensure_placeholder()
         self.buffer_text += new_text
         self._stream_current_content()
 
@@ -31,6 +30,7 @@ class PreGuardrailManager(BaseManager):
         if not self.processed_text or self.current_end_position >= len(self.processed_text):
             return
 
+        self._ensure_placeholder()
         end_pos = min(self.current_end_position + chunk_size, len(self.processed_text))
         chunk = self.processed_text[self.current_start_position:end_pos]
         self.content_placeholder.write(chunk)

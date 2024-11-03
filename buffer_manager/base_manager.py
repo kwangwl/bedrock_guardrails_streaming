@@ -71,7 +71,7 @@ class BaseManager:
             self.content_placeholder = self.placeholder.empty()
 
     def _reset_buffer(self):
-        """버퍼와 플레이스홀더 초기화"""
+        """버퍼 와 플레이스홀더 초기화"""
         self.buffer_text = ""
         self.content_placeholder = None
 
