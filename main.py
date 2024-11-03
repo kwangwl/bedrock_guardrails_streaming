@@ -78,7 +78,7 @@ def main():
         )
 
     # 디버그 모드 설정
-    debug_mode = st.sidebar.checkbox("디버그 모드", value=False)
+    debug_mode = st.sidebar.toggle('가드레일 검사 결과 표시', value=False, help="가드레일 검사 과정과 결과를 실시간으로 확인할 수 있습니다")
 
     # 사용자 입력 UI
     user_input = st.text_input("질문을 입력하세요:", "")

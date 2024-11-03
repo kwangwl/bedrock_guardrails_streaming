@@ -27,15 +27,17 @@ class BaseManager:
 
             for event in stream:
                 if 'messageStart' in event:
-                    self.placeholder.markdown("**답변 Start**")
-                elif 'contentBlockDelta' in event:
+                    self.placeholder.divider()
+                    # self.placeholder.markdown("**답변 Start**")
+                if 'contentBlockDelta' in event:
                     should_stop = self._handle_content(event['contentBlockDelta']['delta']['text'])
                     if should_stop:
                         return self.full_text
                 elif 'messageStop' in event:
                     self._handle_stream_end()
                 elif 'metadata' in event:
-                    self.placeholder.json(event['metadata'])
+                    self.placeholder.divider()
+                    # self.placeholder.json(event['metadata'])
 
             return self.full_text
 
@@ -54,20 +56,19 @@ class BaseManager:
     def _show_results(self, status, violations, response):
         """가드레일 검사 결과를 UI에 표시"""
         if self.debug_mode:
-            return
+            # debug mode 일때만 출력
+            status_messages = {
+                "blocked": ("가드레일 검사 결과 : 🚫 Blocked", "error"),
+                "anonymized": ("가드레일 검사 결과 : ⚠️ Anonymized", "warning"),
+                "passed": ("가드레일 검사 결과 : ✅ Passed", "success")
+            }
 
-        status_messages = {
-            "blocked": ("가드레일 검사 결과 : 🚫 Blocked", "error"),
-            "anonymized": ("가드레일 검사 결과 : ⚠️ Anonymized", "warning"),
-            "passed": ("가드레일 검사 결과 : ✅ Passed", "success")
-        }
+            message, method = status_messages.get(status)
+            getattr(self.placeholder, method)(message)
 
-        message, method = status_messages.get(status)
-        getattr(self.placeholder, method)(message)
-
-        with self.placeholder.expander("가드레일 검사 Trace"):
-            st.dataframe(pd.DataFrame(violations), hide_index=True, use_container_width=True)
-            st.json(response)
+            with self.placeholder.expander("가드레일 검사 Trace"):
+                st.dataframe(pd.DataFrame(violations), hide_index=True, use_container_width=True)
+                st.json(response)
 
     def _ensure_placeholder(self):
         """UI 표시를 위한 플레이스홀더 생성"""
