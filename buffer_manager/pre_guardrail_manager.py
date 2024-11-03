@@ -4,8 +4,8 @@ from buffer_manager.base_manager import BaseManager
 class PreGuardrailManager(BaseManager):
     """가드레일 검사 후 승인된 텍스트만 점진적으로 표시하는 관리자"""
 
-    def __init__(self, placeholder, text_unit, guardrail_config):
-        super().__init__(placeholder, text_unit, guardrail_config)
+    def __init__(self, placeholder, buffer_size, guardrail_config):
+        super().__init__(placeholder, buffer_size, guardrail_config)
         self.processed_text = ""
         self.current_start_position = 0
         self.current_end_position = 0
@@ -15,7 +15,7 @@ class PreGuardrailManager(BaseManager):
         self.buffer_text += new_text
         self._stream_current_content()
 
-        if len(self.buffer_text) > self.text_unit:
+        if len(self.buffer_text) > self.buffer_size:
             self._process_buffer()
         return False
 

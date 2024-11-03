@@ -6,10 +6,10 @@ from guardrails.bedrock import apply_guardrail
 class BaseManager:
     """스트리밍 응답을 처리하는 기본 관리자 클래스"""
 
-    def __init__(self, placeholder: st.container, text_unit: int, guardrail_config: dict):
+    def __init__(self, placeholder, buffer_size, guardrail_config):
         """초기 설정 및 상태 초기화"""
         self.placeholder = placeholder
-        self.text_unit = text_unit
+        self.buffer_size = buffer_size
         self.guardrail_config = guardrail_config
 
         # 공통 상태
