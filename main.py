@@ -49,9 +49,6 @@ def main():
     )
 
     # 버퍼 크기 설정
-    initial_buffer_size = 0
-    buffer_size = 0
-
     if selected_manager == "동적 버퍼 처리 (가드레일 선처리)":
         initial_buffer_size = st.sidebar.slider(
             "초기 버퍼 크기",
@@ -70,6 +67,7 @@ def main():
             help="두 번째 이후 응답의 버퍼 크기"
         )
     else:
+        initial_buffer_size = 0
         buffer_size = st.sidebar.slider(
             "버퍼 크기",
             min_value=0,
@@ -78,6 +76,9 @@ def main():
             step=10,
             help="한 번에 처리할 텍스트 단위 크기"
         )
+
+    # 디버그 모드 설정
+    debug_mode = st.sidebar.checkbox("디버그 모드", value=False)
 
     # 사용자 입력 UI
     user_input = st.text_input("질문을 입력하세요:", "")
@@ -98,13 +99,15 @@ def main():
                     placeholder=st.container(),
                     initial_buffer_size=initial_buffer_size,
                     subsequent_buffer_size=buffer_size,
-                    guardrail_config=GUARDRAIL_CONFIG
+                    guardrail_config=GUARDRAIL_CONFIG,
+                    debug_mode=debug_mode
                 )
             else:
                 buffer_manager = buffer_manager_class(
                     placeholder=st.container(),
                     buffer_size=buffer_size,
-                    guardrail_config=GUARDRAIL_CONFIG
+                    guardrail_config=GUARDRAIL_CONFIG,
+                    debug_mode=debug_mode
                 )
             buffer_manager.process_stream(response)
 

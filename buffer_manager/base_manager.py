@@ -6,11 +6,12 @@ from guardrails.bedrock import apply_guardrail
 class BaseManager:
     """스트리밍 응답을 처리하는 기본 관리자 클래스"""
 
-    def __init__(self, placeholder, buffer_size, guardrail_config):
+    def __init__(self, placeholder, buffer_size, guardrail_config, debug_mode):
         """초기 설정 및 상태 초기화"""
         self.placeholder = placeholder
         self.buffer_size = buffer_size
         self.guardrail_config = guardrail_config
+        self.debug_mode = debug_mode
 
         # 공통 상태
         self.buffer_text = ""
@@ -52,6 +53,9 @@ class BaseManager:
 
     def _show_results(self, status, violations, response):
         """가드레일 검사 결과를 UI에 표시"""
+        if self.debug_mode:
+            return
+
         status_messages = {
             "blocked": ("가드레일 검사 결과 : 🚫 Blocked", "error"),
             "anonymized": ("가드레일 검사 결과 : ⚠️ Anonymized", "warning"),

@@ -4,9 +4,9 @@ from buffer_manager.pre_guardrail_manager import PreGuardrailManager
 class DynamicGuardrailManager(PreGuardrailManager):
     """첫 버퍼와 이후 버퍼 크기를 다르게 설정하여 처리하는 관리자"""
 
-    def __init__(self, placeholder, initial_buffer_size, subsequent_buffer_size, guardrail_config):
+    def __init__(self, placeholder, initial_buffer_size, subsequent_buffer_size, guardrail_config, debug_mode):
         """초기 설정 및 상태 초기화"""
-        super().__init__(placeholder, subsequent_buffer_size, guardrail_config)
+        super().__init__(placeholder, subsequent_buffer_size, guardrail_config, debug_mode)
         self.initial_buffer_size = initial_buffer_size
         self.subsequent_buffer_size = subsequent_buffer_size
         self.is_first_buffer = True
