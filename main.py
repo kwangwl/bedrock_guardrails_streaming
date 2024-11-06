@@ -53,8 +53,8 @@ def main():
         initial_buffer_size = st.sidebar.slider(
             "초기 버퍼 크기",
             min_value=0,
-            max_value=500,
-            value=50,
+            max_value=1000,
+            value=500,
             step=10,
             help="첫 번째 응답의 버퍼 크기"
         )
@@ -62,7 +62,7 @@ def main():
             "이후 버퍼 크기",
             min_value=0,
             max_value=1000,
-            value=250,
+            value=1000,
             step=10,
             help="두 번째 이후 응답의 버퍼 크기"
         )
@@ -72,7 +72,7 @@ def main():
             "버퍼 크기",
             min_value=0,
             max_value=1000,
-            value=250,
+            value=1000,
             step=10,
             help="한 번에 처리할 텍스트 단위 크기"
         )
