@@ -1,3 +1,4 @@
+import time
 from buffer_manager.base_manager import BaseManager
 
 
@@ -35,6 +36,8 @@ class PreGuardrailManager(BaseManager):
         chunk = self.processed_text[self.current_start_position:end_pos]
         self.content_placeholder.write(chunk)
         self.current_end_position = end_pos
+
+        time.sleep(0.03)
 
     def _stream_remaining_content(self):
         """남은 처리된 텍스트 모두 표시"""
