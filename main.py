@@ -25,6 +25,19 @@ GUARDRAIL_CONFIG = {
 }
 
 
+def show_architecture_image(selected_manager):
+    image_paths = {
+        "실시간 스트리밍 (가드레일 후처리)": "static/post_guardrail_arch.png",
+        "지연 처리 (가드레일 선처리)": "static/pre_guardrail_arch.png",
+        "동적 버퍼 처리 (가드레일 선처리)": "static/dynamic_buffer_arch.png"
+    }
+
+    image_path = image_paths.get(selected_manager)
+    if image_path:
+        with st.expander("아키텍처 다이어그램", expanded=True):
+            st.image(image_path, caption=f"{selected_manager} 아키텍처", use_column_width=True)
+
+
 def main():
     # 페이지 설정
     st.set_page_config(page_title="Guardrails Demo")
@@ -78,7 +91,10 @@ def main():
         )
 
     # 디버그 모드 설정
-    debug_mode = st.sidebar.toggle('가드레일 검사 결과 표시', value=False, help="가드레일 검사 과정과 결과를 실시간으로 확인할 수 있습니다")
+    debug_mode = st.sidebar.toggle('가드레일 검사 결과 표시', value=True, help="가드레일 검사 과정과 결과를 실시간으로 확인할 수 있습니다")
+
+    # 아키텍처 이미지 표시
+    show_architecture_image(selected_manager)
 
     # 사용자 입력 UI
     user_input = st.text_input("질문을 입력하세요:", "")
