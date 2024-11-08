@@ -136,7 +136,25 @@ class BedrockGuardrail:
                 guardrailIdentifier=self.guardrail_id,
                 guardrailVersion=self.guardrail_version,
                 source="OUTPUT",
-                content=[{"text": {"text": text}}]
+                content=[
+                    {
+                        "text": {
+                            "text": "ground_source",
+                            "qualifiers": ["grounding_source"]
+                        }
+                    },
+                    {
+                        "text": {
+                            "text": "query",
+                            "qualifiers": ["query"]
+                        }
+                    },
+                    {
+                        "text": {
+                            "text": text
+                        }
+                    }
+                ]
             )
 
         except Exception as e:
@@ -151,7 +169,7 @@ class BedrockGuardrail:
         }
 
 
-def run_performance_test(region, guardrail_id, guardrail_version, word_counts, iterations, words_file="test_words.csv"):
+def run_performance_test(region, guardrail_id, guardrail_version, word_counts, iterations, words_file="./test_words.csv"):
     """다양한 단어 수에 대한 성능 테스트 실행"""
     results = {
         "local": {},
@@ -206,7 +224,8 @@ def run_performance_test(region, guardrail_id, guardrail_version, word_counts, i
 
 
 if __name__ == "__main__":
-    word_counts = [1, 1000, 10000, 100000]  # 테스트할 단어 개수
+    word_counts = [1, 1000, 10000]  # 테스트할 단어 개수
+
     results = run_performance_test(
         region="",
         guardrail_id="",
