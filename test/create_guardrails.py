@@ -321,11 +321,11 @@ def create_guardrails(name, region, file_path):
             'filtersConfig': [
                 {
                     'type': 'GROUNDING',
-                    'threshold': 0.75
+                    'threshold': 0.21
                 },
                 {
                     'type': 'RELEVANCE',
-                    'threshold': 0.75
+                    'threshold': 0.21
                 }
             ]
         },
@@ -341,4 +341,4 @@ def create_guardrails(name, region, file_path):
 
 
 if __name__ == "__main__":
-    create_guardrails("test11", "", "./test_words.csv")
+    create_guardrails("", "", "./test_words.csv")

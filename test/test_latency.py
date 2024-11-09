@@ -139,19 +139,19 @@ class BedrockGuardrail:
                 content=[
                     {
                         "text": {
-                            "text": "ground_source",
+                            "text": "London is the capital of the UK. Seoul is the capital of South Korea.",
                             "qualifiers": ["grounding_source"]
                         }
                     },
                     {
                         "text": {
-                            "text": "query",
+                            "text": "What is the capital of South Korea?",
                             "qualifiers": ["query"]
                         }
                     },
                     {
                         "text": {
-                            "text": text
+                            "text": "한국의 수도는 서울입니다."
                         }
                     }
                 ]
@@ -162,9 +162,9 @@ class BedrockGuardrail:
             return {"latency": 0, "error": str(e)}
 
         end_time = time.time()
-
+        latency = response['assessments'][0]['invocationMetrics']['guardrailProcessingLatency']
         return {
-            "latency": end_time - start_time,
+            "latency": latency,
             "response": response
         }
 
@@ -224,7 +224,7 @@ def run_performance_test(region, guardrail_id, guardrail_version, word_counts, i
 
 
 if __name__ == "__main__":
-    word_counts = [1, 1000, 10000]  # 테스트할 단어 개수
+    word_counts = [1000]  # 테스트할 단어 개수
 
     results = run_performance_test(
         region="",
