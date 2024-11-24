@@ -8,7 +8,7 @@ from buffer_manager.dynamic_guardrail_manager import DynamicGuardrailManager
 # 설정값
 MODEL_ID = {
     "Haiku": "anthropic.claude-3-haiku-20240307-v1:0",
-    "Sonnet 3.5 v1": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+    "Sonnet 3.5 v1": "us.anthropic.claude-3-5-sonnet-20240620-v1:0",
 }
 
 BUFFER_MANAGERS = {
@@ -105,7 +105,7 @@ def main():
             response = get_streaming_response(
                 prompt=user_input,
                 model_id=MODEL_ID[selected_model],
-                region=GUARDRAIL_CONFIG["region"]
+                region=st.secrets["BEDROCK_REGION"]
             )
 
             # 선택된 버퍼 매니저로 응답 처리
