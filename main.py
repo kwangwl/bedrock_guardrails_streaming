@@ -67,7 +67,7 @@ def main():
             "초기 버퍼 크기",
             min_value=0,
             max_value=1000,
-            value=400,
+            value=300,
             step=10,
             help="첫 번째 응답의 버퍼 크기"
         )
