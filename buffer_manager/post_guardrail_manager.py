@@ -5,6 +5,7 @@ class PostGuardrailManager(BaseManager):
     """텍스트를 먼저 표시하고 후속으로 가드레일을 적용하는 관리자"""
     def _handle_content(self, new_text):
         """새로운 텍스트를 버퍼에 추가하고 즉시 표시"""
+        self._print_start_time()
         self._ensure_placeholder()
         self.buffer_text += new_text
         self._display_content(self.buffer_text)

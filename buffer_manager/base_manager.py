@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from guardrails.bedrock import apply_guardrail
+import time
 
 
 class BaseManager:
@@ -17,6 +18,8 @@ class BaseManager:
         self.buffer_text = ""
         self.full_text = ""
         self.content_placeholder = None
+        self.start_time = None
+        self.b_first_write = True
 
     def process_stream(self, response):
         """스트림 응답을 처리하고 결과 텍스트 반환"""
@@ -28,7 +31,7 @@ class BaseManager:
             for event in stream:
                 if 'messageStart' in event:
                     self.placeholder.divider()
-                    # self.placeholder.markdown("**답변 Start**")
+                    self.start_time = time.time()
                 if 'contentBlockDelta' in event:
                     should_stop = self._handle_content(event['contentBlockDelta']['delta']['text'])
                     if should_stop:
@@ -88,3 +91,10 @@ class BaseManager:
     def _handle_stream_end(self):
         """스트림 종료 시 처리"""
         raise NotImplementedError
+
+    def _print_start_time(self):
+        if self.b_first_write:
+            end_time = time.time()
+            elapsed_time = end_time - self.start_time
+            self.placeholder.info(f"답변 Start (소요 시간: {elapsed_time:.2f} 초)")
+            self.b_first_write = False

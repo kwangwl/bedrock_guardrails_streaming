@@ -50,6 +50,7 @@ class PreGuardrailManager(BaseManager):
         if not self.buffer_text:
             return
 
+        self._print_start_time()
         self._stream_remaining_content()
         status, violations, filtered_text, response = self._apply_guardrail()
 
