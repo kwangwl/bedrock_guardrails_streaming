@@ -1,4 +1,5 @@
 from buffer_manager.pre_guardrail_manager import PreGuardrailManager
+import math
 
 
 class DynamicGuardrailManager(PreGuardrailManager):
@@ -9,7 +10,7 @@ class DynamicGuardrailManager(PreGuardrailManager):
         super().__init__(placeholder, subsequent_buffer_size, guardrail_config, debug_mode)
         self.initial_buffer_size = initial_buffer_size
         self.subsequent_buffer_size = subsequent_buffer_size
-        self.buffer_ratio = int(self.subsequent_buffer_size / self.initial_buffer_size) + 1
+        self.buffer_ratio = math.ceil(self.subsequent_buffer_size / self.initial_buffer_size)
         self.is_first_buffer = True
         self.is_first_chunk = True
 

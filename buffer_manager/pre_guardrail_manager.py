@@ -26,18 +26,19 @@ class PreGuardrailManager(BaseManager):
             self._process_buffer()
         self._stream_remaining_content()
 
-    def _stream_current_content(self, chunk_size=5):
+    def _stream_current_content(self, chunk_size=3):
         """처리된 텍스트를 청크 단위로 순차적으로 표시"""
         if not self.processed_text or self.current_end_position >= len(self.processed_text):
             return
-        print(len(self.buffer_text))
+
+        # print(len(self.buffer_text))
         self._ensure_placeholder()
         end_pos = min(self.current_end_position + chunk_size, len(self.processed_text))
         chunk = self.processed_text[self.current_start_position:end_pos]
         self.content_placeholder.write(chunk)
         self.current_end_position = end_pos
 
-        time.sleep(0.02)
+        time.sleep(0.05)
 
     def _stream_remaining_content(self):
         """남은 처리된 텍스트 모두 표시"""
