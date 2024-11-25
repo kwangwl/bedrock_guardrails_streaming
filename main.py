@@ -7,8 +7,8 @@ from buffer_manager.dynamic_guardrail_manager import DynamicGuardrailManager
 
 # 설정값
 MODEL_ID = {
-    "Haiku": "anthropic.claude-3-haiku-20240307-v1:0",
     "Sonnet 3.5 v1": "us.anthropic.claude-3-5-sonnet-20240620-v1:0",
+    "Haiku": "anthropic.claude-3-haiku-20240307-v1:0",
 }
 
 BUFFER_MANAGERS = {
@@ -97,7 +97,7 @@ def main():
     show_architecture_image(selected_manager)
 
     # 사용자 입력 UI
-    user_input = st.text_input("질문을 입력하세요:", "")
+    user_input = st.text_input("질문을 입력하세요:", "세계에서 유명한 CEO 30명에 대한 이름과 자세한 설명을 같이 적어줘")
 
     if st.button("답변 생성") and user_input:
         try:

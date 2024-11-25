@@ -37,7 +37,7 @@ class PreGuardrailManager(BaseManager):
         self.content_placeholder.write(chunk)
         self.current_end_position = end_pos
 
-        time.sleep(0.03)
+        time.sleep(0.1)
 
     def _stream_remaining_content(self):
         """남은 처리된 텍스트 모두 표시"""

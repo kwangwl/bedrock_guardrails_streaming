@@ -14,7 +14,7 @@ class DynamicGuardrailManager(PreGuardrailManager):
     def _handle_content(self, new_text):
         """새로운 텍스트를 버퍼에 추가하고 동적 크기로 처리"""
         self.buffer_text += new_text
-        self._stream_current_content()
+        self._stream_current_content(len(new_text))
 
         current_buffer_size = self.initial_buffer_size if self.is_first_buffer else self.subsequent_buffer_size
 
