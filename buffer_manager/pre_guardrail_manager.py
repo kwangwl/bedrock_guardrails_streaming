@@ -14,7 +14,7 @@ class PreGuardrailManager(BaseManager):
     def _handle_content(self, new_text):
         """새로운 텍스트를 버퍼에 추가하고 청크 단위로 처리"""
         self.buffer_text += new_text
-        self._stream_current_content()
+        self._stream_current_content(len(new_text))
 
         if len(self.buffer_text) > self.buffer_size:
             self._process_buffer()
@@ -37,7 +37,7 @@ class PreGuardrailManager(BaseManager):
         self.content_placeholder.write(chunk)
         self.current_end_position = end_pos
 
-        time.sleep(0.1)
+        time.sleep(0.03)
 
     def _stream_remaining_content(self):
         """남은 처리된 텍스트 모두 표시"""

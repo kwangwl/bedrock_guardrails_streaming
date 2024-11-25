@@ -67,7 +67,7 @@ def main():
             "초기 버퍼 크기",
             min_value=0,
             max_value=1000,
-            value=500,
+            value=300,
             step=10,
             help="첫 번째 응답의 버퍼 크기"
         )
@@ -97,7 +97,7 @@ def main():
     show_architecture_image(selected_manager)
 
     # 사용자 입력 UI
-    user_input = st.text_input("질문을 입력하세요:", "세계에서 유명한 CEO 30명에 대한 이름과 자세한 설명을 같이 적어줘")
+    user_input = st.text_input("질문을 입력하세요:", "세계에서 유명한 CEO 20명에 대한 이름과 자세한 설명을 같이 적어줘")
 
     if st.button("답변 생성") and user_input:
         try:
