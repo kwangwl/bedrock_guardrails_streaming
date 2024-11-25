@@ -31,14 +31,14 @@ class PreGuardrailManager(BaseManager):
         if not self.processed_text or self.current_end_position >= len(self.processed_text):
             return
 
-        print(f"{len(self.buffer_text)}_{chunk_size}")
+        # print(f"{len(self.buffer_text)}_{chunk_size}")
         self._ensure_placeholder()
         end_pos = min(self.current_end_position + chunk_size, len(self.processed_text))
         chunk = self.processed_text[self.current_start_position:end_pos]
         self.content_placeholder.write(chunk)
         self.current_end_position = end_pos
 
-        time.sleep(0.05)
+        time.sleep(0.01)
 
     def _stream_remaining_content(self):
         """남은 처리된 텍스트 모두 표시"""
