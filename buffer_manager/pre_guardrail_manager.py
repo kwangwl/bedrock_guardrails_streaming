@@ -31,7 +31,7 @@ class PreGuardrailManager(BaseManager):
         if not self.processed_text or self.current_end_position >= len(self.processed_text):
             return
 
-        # print(len(self.buffer_text))
+        print(f"{len(self.buffer_text)}_{chunk_size}")
         self._ensure_placeholder()
         end_pos = min(self.current_end_position + chunk_size, len(self.processed_text))
         chunk = self.processed_text[self.current_start_position:end_pos]

@@ -67,9 +67,17 @@ def main():
             "초기 버퍼 크기",
             min_value=0,
             max_value=1000,
-            value=300,
+            value=250,
             step=10,
             help="첫 번째 응답의 버퍼 크기"
+        )
+        second_buffer_size = st.sidebar.slider(
+            "두번째 버퍼 크기",
+            min_value=0,
+            max_value=1000,
+            value=500,
+            step=10,
+            help="두번째 버퍼 크기"
         )
         buffer_size = st.sidebar.slider(
             "이후 버퍼 크기",
@@ -81,6 +89,7 @@ def main():
         )
     else:
         initial_buffer_size = 0
+        second_buffer_size=0
         buffer_size = st.sidebar.slider(
             "버퍼 크기",
             min_value=0,
@@ -114,6 +123,7 @@ def main():
                 buffer_manager = buffer_manager_class(
                     placeholder=st.container(),
                     initial_buffer_size=initial_buffer_size,
+                    second_buffer_size=second_buffer_size,
                     subsequent_buffer_size=buffer_size,
                     guardrail_config=GUARDRAIL_CONFIG,
                     debug_mode=debug_mode
